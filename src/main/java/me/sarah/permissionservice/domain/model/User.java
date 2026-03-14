@@ -8,16 +8,14 @@ import java.util.UUID;
 
 public class User {
 
-    private UUID id;
-    private String username;
-    private Set<String> permissions;
-    private Set<Group> groups = new HashSet<>();
+    private final UUID id;
+    private final String username;
+    private final Set<String> permissions = new HashSet<>();
+    private final Set<Group> groups = new HashSet<>();
 
     public User(UUID id, String username) {
         this.id = id;
         this.username = username;
-        this.permissions = permissions;
-        this.groups = new HashSet<>();
     }
 
     public UUID getId() {
@@ -45,6 +43,8 @@ public class User {
     }
 
     public Set<String> getEffectivePermissions() {
-        return Set.of();
+        final Set<String> effectivePermissions = new HashSet<>(permissions);
+        groups.stream().map(Group::getPermissions).forEach(effectivePermissions::addAll);
+        return effectivePermissions;
     }
 }

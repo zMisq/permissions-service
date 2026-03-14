@@ -9,8 +9,7 @@ import java.util.*;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final Map<UUID, User>
-    users = new HashMap<>();
+    private final Map<UUID, User> users = new HashMap<>();
 
     @Override
     public User createUser(String username) {
@@ -33,7 +32,7 @@ public class UserServiceImpl implements UserService {
     public void addPermissionToUser(UUID userId, String permission) {
         User user = users.get(userId);
 
-user.addPermission(permission);
+        user.addPermission(permission);
     }
 
     @Override
@@ -42,14 +41,9 @@ user.addPermission(permission);
 
         if (user == null) {
             return new HashSet<>();
-            //Leer fals User ned exestiert
+            //Leer fals User ned existiert
         }
-
-        Set<String> permissions = new HashSet<>();
-        for (Group group : user.getGroups()) {
-            permissions.addAll(group.getPermissions());
-        }
-        return permissions;
+        return user.getEffectivePermissions();
     }
 
     @Override

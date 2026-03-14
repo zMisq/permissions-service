@@ -3,14 +3,14 @@ package me.sarah.permissionservice.application.service;
 import me.sarah.permissionservice.domain.model.Group;
 import me.sarah.permissionservice.domain.model.User;
 import org.springframework.stereotype.Service;
-import java.util.UUID;
+
 import java.util.*;
 
 @Service
 public class GroupServiceImpl implements GroupService {
 
-    private final Map<String, Group>
-    groups = new HashMap<>();
+    private final Map<UUID, Group> groups = new HashMap<>();
+
     private final UserService userService;
 
     public GroupServiceImpl(UserService userService) {
@@ -18,15 +18,15 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Group createGroup(String name){
-        Group group = new Group(UUID.randomUUID(), name);
-        groups.put(name, group);
+    public Group createGroup(String name) {
+        var groupId = UUID.randomUUID();
+        Group group = new Group(groupId, name);
+        groups.put(groupId, group);
         return group;
     }
 
     @Override
-    public List<Group> getAllGroups()
-    {
+    public List<Group> getAllGroups() {
         return new ArrayList<>(groups.values());
     }
 

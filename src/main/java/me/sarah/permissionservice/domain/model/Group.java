@@ -12,8 +12,7 @@ public class Group {
     private Set<String> permissions = new HashSet<>();
     private Set<User> users = new HashSet<>();
 
-    public Group(UUID id, String name)
-    {
+    public Group(UUID id, String name) {
       this.id = id;
       this.name = name;
     }

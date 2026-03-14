@@ -26,20 +26,18 @@ public class UserController {
     //HTTP POSt -> erstellt einen User
 
     @PostMapping
-    public User
-    createUsers(@RequestParam String username) {
+    public User createUsers(@RequestParam String username) {
         return userService.createUser(username);
     }
     //alle User Abrufen
 
     @PostMapping("/users/{id}/groups")
-    public void
-    addGroupToUser(@PathVariable UUID id, @RequestBody Group group) {
+    public void addGroupToUser(@PathVariable UUID id, @RequestBody Group group) {
         userService.addUserToGroup(id, group);
     }
 
     @GetMapping
-    public Collection<User>getAllUsers(){
+    public Collection<User> getAllUsers() {
         return (userService.getAllUsers());
     }
 
@@ -51,5 +49,5 @@ public class UserController {
     @GetMapping("/users/{id}/permissions")
     public Set<String> getUserPermissions(@PathVariable UUID id) {
         return userService.getEffectivePermissions(id);
-        }
     }
+}
