@@ -5,18 +5,22 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-
 public class User {
 
     private final UUID id;
     private final String username;
-    private final Set<String> permissions = new HashSet<>();
-    private final Set<Group> groups = new HashSet<>();
+    private final String email;
+    private final Set<String> directPermissions;
+    private final Set<UUID> groupIds;
 
-    public User(UUID id, String username) {
+    public User(UUID id, String username, String email, Set<String> directPermissions, Set<UUID> groupIds) {
         this.id = id;
         this.username = username;
+        this.email = email;
+        this.directPermissions = new HashSet<>(directPermissions);
+        this.groupIds = new HashSet<>(groupIds);
     }
+
 
     public UUID getId() {
         return id;
@@ -26,25 +30,31 @@ public class User {
         return username;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public Set<String> getDirectPermissions() {
+        return new HashSet<>(directPermissions);
+    }
+
+    public Set<UUID> getGroupIds() {
+        return new HashSet<>(groupIds);
+    }
+
     public void addPermission(String permission) {
-        permissions.add(permission);
+        directPermissions.add(permission);
     }
 
-    public void addGroup(Group group) {
-        groups.add(group);
+    public void removePermission(String permission) {
+        directPermissions.remove(permission);
     }
 
-    public Set<String> getPermissions() {
-        return permissions;
+    public void addGroup(UUID groupId) {
+        groupIds.add(groupId);
     }
 
-    public Set<Group> getGroups() {
-        return groups;
-    }
-
-    public Set<String> getEffectivePermissions() {
-        final Set<String> effectivePermissions = new HashSet<>(permissions);
-        groups.stream().map(Group::getPermissions).forEach(effectivePermissions::addAll);
-        return effectivePermissions;
+    public void removeGroup(UUID groupId) {
+        groupIds.remove(groupId);
     }
 }

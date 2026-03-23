@@ -4,26 +4,20 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-
 public class Group {
 
-    private UUID id;
-    private String name;
-    private Set<String> permissions = new HashSet<>();
-    private Set<User> users = new HashSet<>();
+    private final UUID id;
+    private final String name;
+    private final String description;
+    private final Set<String> permissions;
 
-    public Group(UUID id, String name) {
-      this.id = id;
-      this.name = name;
+    public Group(UUID id, String name, String description, Set<String> permissions) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.permissions = new HashSet<>(permissions);
     }
 
-    public void addPermission(String permission) {
-        permissions.add(permission);
-    }
-
-    public Set<String> getPermissions() {
-        return permissions;
-    }
 
     public UUID getId() {
         return id;
@@ -33,7 +27,19 @@ public class Group {
         return name;
     }
 
-    public Set<User> getUsers() {
-        return users;
+    public String getDescription() {
+        return description;
+    }
+
+    public Set<String> getPermissions() {
+        return new HashSet<>(permissions);
+    }
+
+    public void addPermission(String permission) {
+        permissions.add(permission);
+    }
+
+    public void removePermission(String permission) {
+        permissions.remove(permission);
     }
 }
