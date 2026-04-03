@@ -29,21 +29,21 @@ public class GroupController {
         return groupWebMapper.toResponse(group);
     }
 
-    @GetMapping("{groupId}")
+    @GetMapping("/{groupId}")
     public GroupResponse getGroupById(@PathVariable UUID groupId) {
         Group group = groupUseCase.getGroupById(groupId);
         return groupWebMapper.toResponse(group);
     }
 
-    @PostMapping("{groupId}/permissions")
+    @PostMapping("/{groupId}/permissions")
     public GroupResponse assignPermission(@PathVariable UUID groupId, @RequestBody AssignPermissionRequest request) {
         Group group = groupUseCase.assignPermission(groupId, request.permission());
         return groupWebMapper.toResponse(group);
     }
 
     @DeleteMapping("/{groupId}/permissions")
-    public GroupResponse removePermission(@PathVariable UUID groupId, @RequestBody AssignPermissionRequest request) {
-        Group group = groupUseCase.removePermission(groupId, request.permission());
+    public GroupResponse removePermission(@PathVariable UUID groupId, @RequestParam String permission) {
+        Group group = groupUseCase.removePermission(groupId, permission);
         return groupWebMapper.toResponse(group);
     }
 }
