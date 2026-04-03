@@ -1,3 +1,7 @@
 spring:
   application:
     name: permission-service
+  mongodb:
+    representation:
+      uuid: standard
+    database: permission-service

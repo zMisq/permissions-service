@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -41,17 +42,15 @@ class GroupControllerTest {
 
     @Test
     void Test_should_create_Group() throws Exception {
-        UUID groupId = UUID.fromString("e49e08b3-b970-48c4-9d2b-1b5b4881fd6d");
-
         Group group = new Group(
-                groupId,
+                GROUP_ID,
                 "someGroup",
                 "someDescription",
                 Set.of()
         );
 
         GroupResponse response = new GroupResponse(
-                groupId,
+                GROUP_ID,
                 "someGroup",
                 "someDescription",
                 Set.of()
@@ -73,50 +72,46 @@ class GroupControllerTest {
                         """));
 
         result.andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(groupId.toString()))
+                .andExpect(jsonPath("$.id").value(GROUP_ID.toString()))
                 .andExpect(jsonPath("$.name").value("someGroup"))
                 .andExpect(jsonPath("$.description").value("someDescription"));
     }
 
     @Test
     void Test_should_get_Group_by_id(@Mock Group mockedGroup) throws Exception {
-        UUID groupId = UUID.fromString("e49e08b3-b970-48c4-9d2b-1b5b4881fd6d");
-
         GroupResponse response = new GroupResponse(
-                groupId,
+                GROUP_ID,
                 "someGroup",
                 "someDescription",
                 Set.of()
         );
 
-        when(groupUseCase.getGroupById(groupId))
+        when(groupUseCase.getGroupById(GROUP_ID))
                 .thenReturn(mockedGroup);
         when(groupWebMapper.toResponse(mockedGroup))
                 .thenReturn(response);
 
-        mockMvc.perform(get("/groups/{groupId}", groupId))
+        mockMvc.perform(get("/groups/{groupId}", GROUP_ID))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(groupId.toString()))
+                .andExpect(jsonPath("$.id").value(GROUP_ID.toString()))
                 .andExpect(jsonPath("$.name").value("someGroup"))
                 .andExpect(jsonPath("$.description").value("someDescription"));
     }
 
     @Test
     void Test_should_assignPermission() throws Exception {
-        UUID groupId = UUID.fromString("e49e08b3-b970-48c4-9d2b-1b5b4881fd6d");
-
         Group group = new Group(
-                groupId,
+                GROUP_ID,
                 "someGroup",
                 "someDescription",
                 Set.of()
         );
 
         GroupResponse response = new GroupResponse(
-                groupId,
+                GROUP_ID,
                 "someGroup",
                 "someDescription",
-                Set.of()
+                Set.of("READ")
         );
 
         when(groupUseCase.assignPermission(GROUP_ID, "READ"))
@@ -124,26 +119,33 @@ class GroupControllerTest {
         when(groupWebMapper.toResponse(group))
                 .thenReturn(response);
 
-        mockMvc.perform(post("/groups/{groupId}/permissions", groupId))
+        mockMvc.perform(post("/groups/{groupId}/permissions", GROUP_ID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "permission": "READ"
+                                }
+                                """)
+                )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(groupId.toString()))
+                .andExpect(jsonPath("$.id").value(GROUP_ID.toString()))
                 .andExpect(jsonPath("$.name").value("someGroup"))
-                .andExpect(jsonPath("$.description").value("someDescription"));
+                .andExpect(jsonPath("$.description").value("someDescription"))
+                .andExpect(jsonPath("$.permissions[0]").value("READ"));
+
     }
 
     @Test
     void Test_should_removePermission() throws Exception {
-        UUID groupId = UUID.fromString("e49e08b3-b970-48c4-9d2b-1b5b4881fd6d");
-
         Group group = new Group(
-                groupId,
+                GROUP_ID,
                 "someGroup",
                 "someDescription",
                 Set.of()
         );
 
         GroupResponse response = new GroupResponse(
-                groupId,
+                GROUP_ID,
                 "someGroup",
                 "someDescription",
                 Set.of()
@@ -154,10 +156,10 @@ class GroupControllerTest {
         when(groupWebMapper.toResponse(group))
                 .thenReturn(response);
 
-        mockMvc.perform(delete("/groups/{groupId}/permissions", groupId)
+        mockMvc.perform(delete("/groups/{groupId}/permissions", GROUP_ID)
                         .param("permission", "toBeDeleted"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(groupId.toString()))
+                .andExpect(jsonPath("$.id").value(GROUP_ID.toString()))
                 .andExpect(jsonPath("$.name").value("someGroup"))
                 .andExpect(jsonPath("$.description").value("someDescription"));
     }
