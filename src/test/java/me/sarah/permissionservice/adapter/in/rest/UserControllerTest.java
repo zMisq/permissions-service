@@ -9,12 +9,12 @@ import me.sarah.permissionservice.domain.exception.UserNotFoundException;
 import me.sarah.permissionservice.domain.model.User;
 import me.sarah.permissionservice.port.in.UserUseCase;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Set;
 import java.util.UUID;
 
 import static org.mockito.Mockito.when;
@@ -40,27 +40,16 @@ class UserControllerTest {
     private UserWebMapper userWebMapper;
 
     @Test
-    void Test_should_create_user() throws Exception {
-        UUID userId = UUID.fromString("e49e08b3-b970-48c4-9d2b-1b5b4881fd6d");
-
-        User user = new User(
-                userId,
-                "someUser",
-                "someUser@example.com",
-                Set.of(),
-                Set.of()
-        );
-
+    void Test_should_create_user(@Mock User mockedUser) throws Exception {
         UserResponse response = new UserResponse(
-                userId,
+                USER_ID,
                 "someUser",
                 "someUser@example.com"
         );
 
-        when(userUseCase.createUser("someUser",
-                "someUser@example.com"))
-                .thenReturn(user);
-        when(userWebMapper.toResponse(user))
+        when(userUseCase.createUser("someUser", "someUser@example.com"))
+                .thenReturn(mockedUser);
+        when(userWebMapper.toResponse(mockedUser))
                 .thenReturn(response);
 
         var result = mockMvc.perform(post("/users")
@@ -73,37 +62,27 @@ class UserControllerTest {
                         """));
 
         result.andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(userId.toString()))
+                .andExpect(jsonPath("$.id").value(USER_ID.toString()))
                 .andExpect(jsonPath("$.username").value("someUser"))
                 .andExpect(jsonPath("$.email").value("someUser@example.com"));
     }
 
     @Test
-    void Test_should_get_user_by_id() throws Exception {
-        UUID userId = UUID.fromString("e49e08b3-b970-48c4-9d2b-1b5b4881fd6d");
-
-        User user = new User(
-                userId,
-                "someUser",
-                "someUser@example.com",
-                Set.of(),
-                Set.of()
-        );
-
+    void Test_should_get_user_by_id(@Mock User mockedUser) throws Exception {
         UserResponse response = new UserResponse(
-                userId,
+                USER_ID,
                 "someUser",
                 "someUser@example.com"
         );
 
-        when(userUseCase.getUserById(userId))
-                .thenReturn(user);
-        when(userWebMapper.toResponse(user))
+        when(userUseCase.getUserById(USER_ID))
+                .thenReturn(mockedUser);
+        when(userWebMapper.toResponse(mockedUser))
                 .thenReturn(response);
 
-        mockMvc.perform(get("/users/{userId}", userId))
+        mockMvc.perform(get("/users/{userId}", USER_ID))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(userId.toString()))
+                .andExpect(jsonPath("$.id").value(USER_ID.toString()))
                 .andExpect(jsonPath("$.username").value("someUser"))
                 .andExpect(jsonPath("$.email").value("someUser@example.com"));
     }

@@ -34,24 +34,22 @@ class PermissionControllerTest {
 
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
-    void Test_should_get_Permissions(boolean hasPermission) throws Exception {
-        UUID userId = UUID.fromString("e49e08b3-b970-48c4-9d2b-1b5b4881fd6d");
-
+    void test_should_get_Permissions(boolean hasPermission) throws Exception {
         when(permissionUseCase.hasPermission(USER_ID, "READ"))
                 .thenReturn(hasPermission);
 
         mockMvc.perform(
-                        get("/users/{userId}/permissions/check", userId)
+                        get("/users/{userId}/permissions/check", USER_ID)
                                 .param("permission", "READ")
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.userId").value(userId.toString()))
+                .andExpect(jsonPath("$.userId").value(USER_ID.toString()))
                 .andExpect(jsonPath("$.permission").value("READ"))
                 .andExpect(jsonPath("$.hasPermission").value(hasPermission + ""));
     }
 
     @Test
-    void Test_should_get_InvalidPermission() throws Exception {
+    void test_should_get_InvalidPermission() throws Exception {
         var exception = new InvalidPermissionException("READ");
 
         when(permissionUseCase.hasPermission(USER_ID, "READ"))
@@ -63,6 +61,5 @@ class PermissionControllerTest {
                 .andExpect(jsonPath("$.title").value("Invalid permission"))
                 .andExpect(jsonPath("$.detail")
                         .value("Invalid permission: READ"));
-
     }
 }

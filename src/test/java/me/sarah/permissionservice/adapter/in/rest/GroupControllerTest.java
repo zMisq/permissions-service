@@ -40,15 +40,11 @@ class GroupControllerTest {
     @MockitoBean
     private GroupWebMapper groupWebMapper;
 
+    @Mock
+    private Group mockedGroup;
+
     @Test
     void Test_should_create_Group() throws Exception {
-        Group group = new Group(
-                GROUP_ID,
-                "someGroup",
-                "someDescription",
-                Set.of()
-        );
-
         GroupResponse response = new GroupResponse(
                 GROUP_ID,
                 "someGroup",
@@ -58,8 +54,8 @@ class GroupControllerTest {
 
         when(groupUseCase.createGroup("someGroup",
                 "someDescription"))
-                .thenReturn(group);
-        when(groupWebMapper.toResponse(group))
+                .thenReturn(mockedGroup);
+        when(groupWebMapper.toResponse(mockedGroup))
                 .thenReturn(response);
 
         var result = mockMvc.perform(post("/groups")
@@ -78,7 +74,7 @@ class GroupControllerTest {
     }
 
     @Test
-    void Test_should_get_Group_by_id(@Mock Group mockedGroup) throws Exception {
+    void Test_should_get_Group_by_id() throws Exception {
         GroupResponse response = new GroupResponse(
                 GROUP_ID,
                 "someGroup",
@@ -100,13 +96,6 @@ class GroupControllerTest {
 
     @Test
     void Test_should_assignPermission() throws Exception {
-        Group group = new Group(
-                GROUP_ID,
-                "someGroup",
-                "someDescription",
-                Set.of()
-        );
-
         GroupResponse response = new GroupResponse(
                 GROUP_ID,
                 "someGroup",
@@ -115,8 +104,8 @@ class GroupControllerTest {
         );
 
         when(groupUseCase.assignPermission(GROUP_ID, "READ"))
-                .thenReturn(group);
-        when(groupWebMapper.toResponse(group))
+                .thenReturn(mockedGroup);
+        when(groupWebMapper.toResponse(mockedGroup))
                 .thenReturn(response);
 
         mockMvc.perform(post("/groups/{groupId}/permissions", GROUP_ID)
@@ -137,13 +126,6 @@ class GroupControllerTest {
 
     @Test
     void Test_should_removePermission() throws Exception {
-        Group group = new Group(
-                GROUP_ID,
-                "someGroup",
-                "someDescription",
-                Set.of()
-        );
-
         GroupResponse response = new GroupResponse(
                 GROUP_ID,
                 "someGroup",
@@ -152,8 +134,8 @@ class GroupControllerTest {
         );
 
         when(groupUseCase.removePermission(GROUP_ID, "toBeDeleted"))
-                .thenReturn(group);
-        when(groupWebMapper.toResponse(group))
+                .thenReturn(mockedGroup);
+        when(groupWebMapper.toResponse(mockedGroup))
                 .thenReturn(response);
 
         mockMvc.perform(delete("/groups/{groupId}/permissions", GROUP_ID)
