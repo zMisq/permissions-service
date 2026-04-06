@@ -1,0 +1,37 @@
+### Create user
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "username": "alice",
+  "email": "alice@example.com"
+}
+
+### Get user by id
+GET {{baseUrl}}/users/{{userId}}
+
+### Create group
+POST {{baseUrl}}/groups
+Content-Type: application/json
+
+{
+  "name": "admins",
+  "description": "Admin group"
+}
+
+### Get group by id
+GET {{baseUrl}}/groups/{{groupId}}
+
+### Assign permission to group
+POST {{baseUrl}}/groups/{{groupId}}/permissions
+Content-Type: application/json
+
+{
+  "permission": "USER_READ"
+}
+
+### Remove permission from group
+DELETE {{baseUrl}}/groups/{{groupId}}/permissions?permission=USER_READ
+
+### Check whether a user has a permission
+GET {{baseUrl}}/users/{{userId}}/permissions/check?permission=USER_READ
