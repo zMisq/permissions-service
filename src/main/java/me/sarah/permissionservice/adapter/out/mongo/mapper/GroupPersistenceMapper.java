@@ -15,7 +15,7 @@ public class GroupPersistenceMapper {
                 entity.getName(),
                 entity.getDescription(),
                 entity.getPermissions() == null
-                ? new HashSet<>()
+                        ? new HashSet<>()
                         : new HashSet<>(entity.getPermissions())
         );
     }

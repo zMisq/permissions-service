@@ -3,10 +3,10 @@ package me.sarah.permissionservice.adapter.in.rest;
 
 import me.sarah.permissionservice.adapter.in.rest.dto.UserResponse;
 import me.sarah.permissionservice.adapter.in.rest.mapper.UserWebMapper;
-import me.sarah.permissionservice.domain.exception.*;
+import me.sarah.permissionservice.domain.exception.DomainException;
+import me.sarah.permissionservice.domain.exception.UserAlreadyExistsException;
+import me.sarah.permissionservice.domain.exception.UserNotFoundException;
 import me.sarah.permissionservice.domain.model.User;
-import me.sarah.permissionservice.port.in.GroupUseCase;
-import me.sarah.permissionservice.port.in.PermissionUseCase;
 import me.sarah.permissionservice.port.in.UserUseCase;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,7 +109,6 @@ class UserControllerTest {
     }
 
 
-
     @Test
     void Test_should_get_UserNotFoundException() throws Exception {
         var exception = new UserNotFoundException(USER_ID);
@@ -123,6 +122,7 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.detail")
                         .value("User not found: e49e08b3-b970-48c4-9d2b-1b5b4881fd6d"));
     }
+
     @Test
     void Test_should_get_UserAlreadyExistsException() throws Exception {
         var exception = new UserAlreadyExistsException("someUser");
@@ -131,18 +131,19 @@ class UserControllerTest {
                 .thenThrow(exception);
 
         mockMvc.perform(post("/users")
-                .contentType(APPLICATION_JSON)
-                .content("""
-                        {
-                          "username": "someUser",
-                          "email": "some@mail"
-                        }
-                        """))
+                        .contentType(APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "username": "someUser",
+                                  "email": "some@mail"
+                                }
+                                """))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.title").value("User already exists"))
                 .andExpect(jsonPath("$.detail")
                         .value("User already exists: someUser"));
     }
+
     @Test
     void Test_should_get_DomainException() throws Exception {
         var exception = new DomainException("Domain error");

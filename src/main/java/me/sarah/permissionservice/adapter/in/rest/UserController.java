@@ -25,7 +25,7 @@ public class UserController {
     public UserResponse createUser(@RequestBody CreateUserRequest request) {
         User user = userUseCase.createUser(request.username(),
                 request.email());
-                return userWebMapper.toResponse(user);
+        return userWebMapper.toResponse(user);
     }
 
     @GetMapping("/{userId}")

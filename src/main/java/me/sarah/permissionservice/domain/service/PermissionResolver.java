@@ -23,9 +23,9 @@ public class PermissionResolver {
     public Set<String> resolvePermissions(User user) {
         Set<String> effectivePermissions = new HashSet<>(user.getDirectPermissions());
 
-        for(UUID groupId : user.getGroupIds()) {
+        for (UUID groupId : user.getGroupIds()) {
             Group group = groupRepositoryPort.findById(groupId)
-                    .orElseThrow(()-> new GroupNotFoundException(groupId));
+                    .orElseThrow(() -> new GroupNotFoundException(groupId));
 
             effectivePermissions.addAll(group.getPermissions());
         }

@@ -9,7 +9,7 @@ public class UserWebMapper {
 
     public UserResponse toResponse(User user) {
         return new UserResponse(
-               user.getId(),
+                user.getId(),
                 user.getUsername(),
                 user.getEmail()
         );
