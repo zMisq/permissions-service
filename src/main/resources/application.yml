@@ -5,3 +5,5 @@ spring:
     representation:
       uuid: standard
     database: permission-service
+  main:
+    banner-mode: off
