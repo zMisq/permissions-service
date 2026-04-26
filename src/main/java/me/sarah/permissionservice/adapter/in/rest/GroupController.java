@@ -1,5 +1,6 @@
 package me.sarah.permissionservice.adapter.in.rest;
 
+import jakarta.validation.Valid;
 import me.sarah.permissionservice.adapter.in.rest.dto.AssignPermissionRequest;
 import me.sarah.permissionservice.adapter.in.rest.dto.CreateGroupRequest;
 import me.sarah.permissionservice.adapter.in.rest.dto.GroupResponse;
@@ -23,7 +24,7 @@ public class GroupController {
     }
 
     @PostMapping
-    public GroupResponse createGroup(@RequestBody CreateGroupRequest request) {
+    public GroupResponse createGroup(@Valid @RequestBody CreateGroupRequest request) {
         Group group = groupUseCase.createGroup(request.name(),
                 request.description());
         return groupWebMapper.toResponse(group);

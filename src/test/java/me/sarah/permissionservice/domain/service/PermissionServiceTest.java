@@ -39,7 +39,6 @@ class PermissionServiceTest {
     @Mock
     private User mockedUser;
 
-
     @Nested
     class assignDirectPermission {
 

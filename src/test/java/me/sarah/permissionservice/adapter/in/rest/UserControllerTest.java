@@ -21,8 +21,7 @@ import java.util.UUID;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -31,6 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class UserControllerTest {
 
     private static final UUID USER_ID = UUID.fromString("e49e08b3-b970-48c4-9d2b-1b5b4881fd6d");
+    private static final UUID GROUP_ID = UUID.fromString("e49e08b3-b970-48c4-aaaa-1b5b4881fd6d");
 
     @Autowired
     private MockMvc mockMvc;
@@ -83,6 +83,46 @@ class UserControllerTest {
                 .thenReturn(response);
 
         mockMvc.perform(get("/users/{userId}", USER_ID))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(USER_ID.toString()))
+                .andExpect(jsonPath("$.username").value("someUser"))
+                .andExpect(jsonPath("$.email").value("someUser@example.com"));
+    }
+
+    @Test
+    void Test_should_add_user_to_group(@Mock User mockedUser) throws Exception {
+        UserResponse response = new UserResponse(
+                USER_ID,
+                "someUser",
+                "someUser@example.com"
+        );
+
+        when(userUseCase.addUserToGroup(USER_ID, GROUP_ID))
+                .thenReturn(mockedUser);
+        when(userWebMapper.toResponse(mockedUser))
+                .thenReturn(response);
+
+        mockMvc.perform(post("/users/{userId}/groups/{groupId}", USER_ID, GROUP_ID))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(USER_ID.toString()))
+                .andExpect(jsonPath("$.username").value("someUser"))
+                .andExpect(jsonPath("$.email").value("someUser@example.com"));
+    }
+
+    @Test
+    void Test_should_remove_user_from_group(@Mock User mockedUser) throws Exception {
+        UserResponse response = new UserResponse(
+                USER_ID,
+                "someUser",
+                "someUser@example.com"
+        );
+
+        when(userUseCase.removeUserFromGroup(USER_ID, GROUP_ID))
+                .thenReturn(mockedUser);
+        when(userWebMapper.toResponse(mockedUser))
+                .thenReturn(response);
+
+        mockMvc.perform(delete("/users/{userId}/groups/{groupId}", USER_ID, GROUP_ID))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(USER_ID.toString()))
                 .andExpect(jsonPath("$.username").value("someUser"))

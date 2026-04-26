@@ -5,6 +5,7 @@ import me.sarah.permissionservice.adapter.in.rest.dto.UserResponse;
 import me.sarah.permissionservice.adapter.in.rest.mapper.UserWebMapper;
 import me.sarah.permissionservice.domain.model.User;
 import me.sarah.permissionservice.port.in.UserUseCase;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -22,7 +23,7 @@ public class UserController {
     }
 
     @PostMapping
-    public UserResponse createUser(@RequestBody CreateUserRequest request) {
+    public UserResponse createUser(@Valid @RequestBody CreateUserRequest request) {
         User user = userUseCase.createUser(request.username(),
                 request.email());
         return userWebMapper.toResponse(user);
@@ -31,6 +32,18 @@ public class UserController {
     @GetMapping("/{userId}")
     public UserResponse getUserById(@PathVariable UUID userId) {
         User user = userUseCase.getUserById(userId);
+        return userWebMapper.toResponse(user);
+    }
+
+    @PostMapping("/{userId}/groups/{groupId}")
+    public UserResponse addUserToGroup(@PathVariable UUID userId, @PathVariable UUID groupId) {
+        User user = userUseCase.addUserToGroup(userId, groupId);
+        return userWebMapper.toResponse(user);
+    }
+
+    @DeleteMapping("/{userId}/groups/{groupId}")
+    public UserResponse removeUserFromGroup(@PathVariable UUID userId, @PathVariable UUID groupId) {
+        User user = userUseCase.removeUserFromGroup(userId, groupId);
         return userWebMapper.toResponse(user);
     }
 

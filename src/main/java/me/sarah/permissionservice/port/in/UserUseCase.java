@@ -14,4 +14,3 @@ public interface UserUseCase {
     User removeUserFromGroup(UUID userId, UUID groupId);
 
 }
-

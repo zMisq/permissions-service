@@ -27,12 +27,13 @@ public class GroupService implements GroupUseCase {
                     throw new GroupAlreadyExistsException(group.getName());
                 });
         Group group = groupCreator.create(name, description);
+
         return groupRepositoryPort.save(group);
     }
 
     @Override
     public Group getGroupById(UUID groupId) {
-        return groupRepositoryPort.findById((groupId))
+        return groupRepositoryPort.findById(groupId)
                 .orElseThrow(() -> new GroupNotFoundException(groupId));
     }
 
